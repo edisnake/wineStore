@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}WineFeed index{% endblock %}
+
+{% block body %}
+    <h1>WineFeed index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Title</th>
+                <th>Link</th>
+                <th>PubDate</th>
+                <th>Description</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for wine_feed in wine_feeds %}
+            <tr>
+                <td>{{ wine_feed.id }}</td>
+                <td>{{ wine_feed.title }}</td>
+                <td>{{ wine_feed.link }}</td>
+                <td>{{ wine_feed.pubDate ? wine_feed.pubDate|date('Y-m-d') : '' }}</td>
+                <td>{{ wine_feed.description }}</td>
+                <td>
+                    <a href="{{ path('wine_feed_show', {'id': wine_feed.id}) }}">show</a>
+                    <a href="{{ path('wine_feed_edit', {'id': wine_feed.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <a href="{{ path('main') }}">Back to Home Page</a>
+    <a href="{{ path('wine_feed_new') }}"> - Create new</a>
+{% endblock %}

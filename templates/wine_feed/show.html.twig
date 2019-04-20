@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}WineFeed{% endblock %}
+
+{% block body %}
+    <h1>WineFeed</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ wine_feed.id }}</td>
+            </tr>
+            <tr>
+                <th>Title</th>
+                <td>{{ wine_feed.title }}</td>
+            </tr>
+            <tr>
+                <th>Link</th>
+                <td>{{ wine_feed.link }}</td>
+            </tr>
+            <tr>
+                <th>PubDate</th>
+                <td>{{ wine_feed.pubDate ? wine_feed.pubDate|date('Y-m-d') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Description</th>
+                <td>{{ wine_feed.description }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('wine_feed_index') }}">back to list</a>
+
+    <a href="{{ path('wine_feed_edit', {'id': wine_feed.id}) }}">edit</a>
+
+    {{ include('wine_feed/_delete_form.html.twig') }}
+{% endblock %}
