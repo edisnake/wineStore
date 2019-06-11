@@ -1,0 +1,3 @@
+# ignoring folders/files to be copied into the container
+*/docker*
+/var

@@ -10,37 +10,36 @@ use App\Controller\WineFeedController;
  */
 class RssService
 {
-    const RSS_URL = 'https://www.winespectator.com/rss/rss?t=dwp';
+    const RSS_URL = 'https://www.winespectator.com/rss/rss';
 
 
     /**
      * @return null|\SimpleXMLElement
      */
-    public function getRssItems(): ?\SimpleXMLElement
+    public function getRssChannel(): ?\SimpleXMLElement
     {
         $rss = simplexml_load_file(self::RSS_URL);
-        $items = null;
+        $channel = null;
 
         if (is_a($rss, 'SimpleXMLElement')) {
-            $items = $rss->channel->item ?? [];
+            $channel = $rss->channel ?? [];
         }
-        
-        return $items;
-    }
 
+        return $channel;
+    }
 
     /**
      * @return array
      */
     public function getTodayWines(): array
     {
-        $items = $this->getRssItems();
+        $channel = $this->getRssChannel();
         $todayItems = [];
 
-        if (!empty($items)) {
+        if (!empty($channel)) {
             $today = date('D, d M Y');
 
-            foreach ($items as $item) {
+            foreach ($channel->item as $item) {
                 if (date('D, d M Y', strtotime($item->pubDate)) === $today) {
                     $todayItems[] = $item;
                 }
@@ -51,13 +50,19 @@ class RssService
     }
 
     /**
-     * @param WineFeedController $wineFeedController
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @return array
      */
-    public function importRss(WineFeedController $wineFeedController)
+    public function getAllWines(): array
     {
-        $items = $this->getTodayWines();
+        $channel = $this->getRssChannel();
+        $items = [];
 
-        return $wineFeedController->createItems($items);
+        if (!empty($channel)) {
+            foreach ($channel->item as $item) {
+                $items[] = $item;
+            }
+        }
+
+        return $items;
     }
 }

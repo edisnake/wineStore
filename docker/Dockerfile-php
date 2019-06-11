@@ -1,0 +1,21 @@
+FROM php:7.2-fpm
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        git \
+        zlib1g-dev \
+        libxml2-dev \
+        libzip-dev \
+        librabbitmq-dev \
+        libsqlite3-dev \
+    && docker-php-ext-install \
+        pdo_mysql \
+        pdo_sqlite \
+        zip \
+    && pecl install amqp \
+    && docker-php-ext-enable amqp
+
+RUN curl -sS https://getcomposer.org/installer | php && mv composer.phar /usr/local/bin/composer
+COPY ./ /var/www/wineStore/
+WORKDIR /var/www/wineStore/
+RUN /bin/bash -c 'mkdir /var/www/wineStore/var; chmod -R 777 /var/www/wineStore/var;'
+RUN /bin/bash -c 'php bin/console doctrine:migrations:migrate'
+RUN /bin/bash -c 'chmod 777 /var/www/wineStore/var/wineStoreData.db'

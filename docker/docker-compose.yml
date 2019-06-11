@@ -1,0 +1,44 @@
+version: "3"
+
+services:
+  php:
+    container_name: php
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile-php
+    environment:
+      - MESSENGER_TRANSPORT_DSN=amqp://guest:guest@rabbitmq:5672/%2f/messages # AMQP connection string
+#    ports:
+#      - 8001:8001 # browser_port : internal_port started with  php -S command when internal server is used
+    networks:
+      - custom_network
+
+  nginx:
+    container_name: nginx
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile-nginx
+    ports:
+      - 80:80
+      - 8001:80
+    networks:
+      - custom_network
+
+  rabbitmq:
+    container_name: rabbitmq
+    build:
+      context: .
+      dockerfile: Dockerfile-rabbitmq
+    ports:
+      - 15672:15672
+      - 5672:5672
+    volumes:
+      - rabbitmq:/var/lib/rabbitmq:cached
+    networks:
+      - custom_network
+
+volumes:
+  rabbitmq:
+
+networks:
+  custom_network:

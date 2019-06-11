@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Service\RssService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Controller\WineFeedController;
 use Symfony\Component\Messenger\MessageBusInterface;
@@ -14,20 +16,8 @@ use App\Entity\WineFeed;
 class MainController extends AbstractController
 {
     /**
-     * @Route("/readRss", name="readRss")
-     * @param RssService $rssService
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function readRss(RssService $rssService)
-    {
-        return $this->render('main/index.html.twig', [
-            'rssItems' => $rssService->getTodayWines(),
-        ]);
-    }
-
-    /**
      * @Route("/", name="main")
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @return RedirectResponse
      */
     public function main()
     {
@@ -37,23 +27,40 @@ class MainController extends AbstractController
     /**
      * @Route("/import", name="import")
      * @param RssService $rssService
-     * @param \App\Controller\WineFeedController $wineFeedController
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @param WineFeedController $wineFeedController
+     * @param Request $request
+     * @return RedirectResponse
      */
-    public function import(RssService $rssService, WineFeedController $wineFeedController)
+    public function import(RssService $rssService, WineFeedController $wineFeedController, Request $request)
     {
-        return $rssService->importRss($wineFeedController);
+        $items = $rssService->getTodayWines();
+
+        if (empty($items)) {
+            $this->addFlash(
+                'info',
+                'No wines found today!'
+            );
+
+            if (empty($items = $rssService->getAllWines())) {
+                $this->addFlash(
+                    'warning',
+                    'No available wines to import!'
+                );
+            }
+        }
+
+        return $wineFeedController->createItems($items);
     }
 
     /**
      * @Route("/orderRandomWine", name="orderRandomWine")
      * @param MessageBusInterface $bus
      * @param \App\Controller\WineFeedController $wineFeedController
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @return RedirectResponse
      */
     public function orderRandomWine(MessageBusInterface $bus, WineFeedController $wineFeedController)
     {
-        $dbWineFeeds = $wineFeedController->getTodayWineDB();
+        $dbWineFeeds = $wineFeedController->getAllWineDB();
 
         if (!empty($dbWineFeeds) && is_array($dbWineFeeds)) {
 
@@ -62,8 +69,24 @@ class MainController extends AbstractController
             $wineFeedId = (string)$dbWineFeeds[$randIdx]->getId() ?? '';
 
             if ($wineFeedId) {
-                $bus->dispatch(new WineRequest($wineFeedId));
+                try {
+                    $bus->dispatch(new WineRequest($wineFeedId));
+                    $this->addFlash(
+                        'info',
+                        "Wine {$dbWineFeeds[$randIdx]->getTitle()} was ordered!"
+                    );
+                } catch (\Throwable $exception) {
+                    $this->addFlash(
+                        'warning',
+                        "Something went wrong with your order. " . $exception->getMessage()
+                    );
+                }
             }
+        } else {
+            $this->addFlash(
+                'info',
+                'No wines found in the DB!'
+            );
         }
 
         return $this->redirectToRoute('wine_feed_main');

@@ -19,32 +19,8 @@ class WineFeedRepository extends ServiceEntityRepository
         parent::__construct($registry, WineFeed::class);
     }
 
-    // /**
-    //  * @return WineFeed[] Returns an array of WineFeed objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function getAllWines()
     {
-        return $this->createQueryBuilder('w')
-            ->andWhere('w.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('w.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+        return $this->findBy(array(), array('pubDate' => 'DESC'));
     }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?WineFeed
-    {
-        return $this->createQueryBuilder('w')
-            ->andWhere('w.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

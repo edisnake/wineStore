@@ -35,7 +35,7 @@ class WineFeedController extends AbstractController
     public function main(WineFeedRepository $wineFeedRepository): Response
     {
         return $this->render('main/main.html.twig', [
-            'wine_feeds' => $wineFeedRepository->findAll(),
+            'wine_feeds' => $wineFeedRepository->getAllWines(),
         ]);
     }
 
@@ -135,6 +135,15 @@ class WineFeedController extends AbstractController
                     date('D, d M Y')
                 )
             ]);
+
+        return $wineFeedRepository;
+    }
+
+    public function getAllWineDB()
+    {
+        $wineFeedRepository = $this->getDoctrine()
+            ->getRepository(WineFeed::class)
+            ->findAll();
 
         return $wineFeedRepository;
     }

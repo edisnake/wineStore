@@ -1,18 +1,18 @@
-<div class="container">
+<div class="container verticalScroll border-top">
 {% if wine_feeds %}
     <div class="row table-dark">
         <div class="col-md-3 text-center">Title</div>
-        <div class="col-md-5 text-center">Link</div>
+        <div class="col-md-3 text-center">Link</div>
         <div class="col-md-2 text-center">Publication Date</div>
-        <div class="col-md-2 text-center">Description</div>
+        <div class="col-md-4 text-center">Description</div>
     </div>
 {% endif %}
 {% for item in wine_feeds %}
     <div class="row">
         <div class="col-md-3">{{ item.title }}</div>
-        <div class="col-md-5">{{ item.link }}</div>
+        <div class="col-md-3 text">{{ item.link }}</div>
         <div class="col-md-2 text-center">{{ item.pubDate|date('Y-m-d') }}</div>
-        <div class="col-md-2">{{ item.description }}</div>
+        <div class="col-md-4">{{ item.description }}</div>
     </div>
 {% else %}
     <div class="row">
