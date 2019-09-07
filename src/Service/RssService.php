@@ -2,15 +2,13 @@
 
 namespace App\Service;
 
-use App\Controller\WineFeedController;
-
 /**
  * Class RssService
  * @package App\Service
  */
 class RssService
 {
-    const RSS_URL = 'https://www.winespectator.com/rss/rss';
+    const RSS_URL = 'https://www.winespectator.com/rss/rss?t=dwp';
 
 
     /**

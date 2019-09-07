@@ -13,6 +13,7 @@ Clone the git repository
     
             composer install
             php bin/console doctrine:migrations:migrate
+            php bin/console doctrine:fixtures:load
             php bin/console server:run
 
         Now the App can be found in **http://127.0.0.1:8000/**
@@ -22,7 +23,7 @@ Clone the git repository
     * In your CLI go to wineStore/docker folder
     * start docker running 
 
-            docker-compose up
+            docker-compose up -d
 
         Now the App can be found in your docker IP address i.e. **http://192.168.99.100/**
 
@@ -63,7 +64,7 @@ Go to the wineStore folder and run this command
 
 * Show Flash messages
 
-* Unit tests
+* Unit tests with 100% coverage in the Service layer
 
 * CRUD Wine Feed feature to ease wine feed handling
 

@@ -1,22 +1,27 @@
-<div class="container verticalScroll border-top">
-{% if wine_feeds %}
-    <div class="row table-dark">
-        <div class="col-md-3 text-center">Title</div>
-        <div class="col-md-3 text-center">Link</div>
-        <div class="col-md-2 text-center">Publication Date</div>
-        <div class="col-md-4 text-center">Description</div>
-    </div>
+<h1>Wine Feed DB List</h1>
+<div class="verticalScroll">
+<table class="table table-sm table-bordered table-hover">
+{% if wines %}
+    <thead>
+        <tr class="table-primary text-center">
+            <th>Title</th>
+            <th>Link</th>
+            <th>Publication Date</th>
+            <th>Description</th>
+        </tr>
+    </thead>
 {% endif %}
-{% for item in wine_feeds %}
-    <div class="row">
-        <div class="col-md-3">{{ item.title }}</div>
-        <div class="col-md-3 text">{{ item.link }}</div>
-        <div class="col-md-2 text-center">{{ item.pubDate|date('Y-m-d') }}</div>
-        <div class="col-md-4">{{ item.description }}</div>
-    </div>
+{% for item in wines %}
+    <tr>
+        <td>{{ item.title }}</td>
+        <td>{{ item.link }}</td>
+        <td>{{ item.pubDate|date('Y-m-d') }}</td>
+        <td>{{ item.description }}</td>
+    </tr>
 {% else %}
-    <div class="row">
-        <div class="col-md-6 text-info">No records found.</div>
-    </div>
+    <tr>
+        <td colspan="4" class="text-info">No wines found.</td>
+    </tr>
 {% endfor %}
+</table>
 </div>

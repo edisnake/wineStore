@@ -1,0 +1,42 @@
+<h1>Wine Orders</h1> &nbsp; <button class="col-sm-2 btn btn-info btn-sm" id="refreshOrdersList">Refresh</button><br/>
+<div class="verticalScroll">
+{% for wineOrder in wineOrders %}
+<table class="table table-sm table-bordered table-hover">
+    <thead>
+        <tr class="table-primary">
+            <th>Order Id: {{ wineOrder.order.id }}</th>
+            <th>Created At: {{ wineOrder.order.createdAt|date('Y-m-d H:i:s') }}</th>
+            <th>Status: {{ wineOrder.order.status }}</th>
+            <th>Waiter: {{ wineOrder.order.waiter.name }}</th>
+            <th>Sommelier: {{ wineOrder.order.sommelier ? wineOrder.order.sommelier.name : '' }}</th>
+        </tr>
+        <tr class="table-success">
+            <th>Wine Id</th>
+            <th colspan="2">Wine Name</th>
+            <th>Status</th>
+            <th>Pub Date</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for wine in wineOrder.wines %}
+        <tr>
+            <td>{{ wine.wine.id }}</td>
+            <td colspan="2">{{ wine.wine.title }}</td>
+            <td>{{ wine.status }}</td>
+            <td>{{ wine.wine.pubDate ? wine.wine.pubDate|date('Y-m-d') : '' }}</td>
+        </tr>
+    {% else %}
+        <tr>
+            <td colspan="5" class="text-info">No wines were found for this order</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% else %}
+    <table class="table table-sm table-bordered table-hover">
+        <tr>
+            <td colspan="5" class="text-info">No orders were found.</td>
+        </tr>
+    </table>
+{% endfor %}
+</div>

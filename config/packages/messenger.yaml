@@ -6,4 +6,4 @@ framework:
 
         routing:
             # Route your messages to the transports
-            'App\Message\WineRequest': amqp
+            'App\Message\WineOrderProcess': amqp

@@ -8,13 +8,19 @@
         <style>
             .verticalScroll {
                 height: 300px;
-                overflow: scroll;
+                overflow-y: auto;
+            }
+
+            .verticalScroll thead th {
+                position: sticky;
+                top: 0;
             }
         </style>
-        <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js"></script>
     </head>
     <body>
         {% block body %}{% endblock %}
-        {% block javascripts %}{% endblock %}
+        {% block javascripts %}
+            <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js"></script>
+        {% endblock %}
     </body>
 </html>

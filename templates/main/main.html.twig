@@ -4,8 +4,6 @@
 
 {% block body %}
     <div class="container">
-        <h1>Wine Feed DB List</h1>
-
         {{ include('main/_wine_feed_db.html.twig') }}
 
         <div class="row">
@@ -13,14 +11,34 @@
                 <a id="importFeed" class="btn btn-primary" href="{{ path('import') }}">Import RSS Wine Feed</a>
             </div>
             <div class="col-lg-1"></div>
-            <div class="p-4 col-lg-2 text-center">
-                <a id="orderWine" class="btn btn-primary" href="{{ path('orderRandomWine') }}">Order Random Wine</a>
+            <div class="p-4 col-lg-3 text-center">
+                <div class="row">
+                    <div class="col">
+                        <a id="createOrder" class="btn btn-primary" href="#">Order Random Wine(s)</a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm">
+                        <label for="quantity">Wine quantity:</label>
+                        <input cols="3"
+                               title="between 1 and 5"
+                               type="number"
+                               id="quantity"
+                               name="quantity"
+                               value="1"
+                               min="1" max="5">
+                        <label for="processDate">Order date:</label>
+                        <input type="date" id="processDate" name="processDate">
+                    </div>
+                </div>
             </div>
             <div class="col-lg-1"></div>
             <div class="p-4 col-lg-2 text-center">
-                <a id="orderWine" class="btn btn-primary" href="{{ path('wine_feed_index') }}">Wine Feed CRUD</a>
+                <a id="wineCrud" class="btn btn-primary" href="{{ path('wine_feed_index') }}">Wine Feed CRUD</a>
             </div>
         </div>
+        <div class="row">
+            <div class="col-12 text-center" id="messages">
         {% for label, messages in app.flashes %}
             {% for message in messages %}
                 <div class="alert alert-{{ label }}" role="alert">
@@ -28,6 +46,86 @@
                 </div>
             {% endfor %}
         {% endfor %}
+            </div>
+        </div>
+
+        <div id="ordersInfo">
+            {{ include('main/_wine_orders.html.twig') }}
+        </div>
     </div>
 {% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script type="application/javascript">
+        // displaying server messages
+        function processAjaxResponse(result) {
+            if (result.msg) {
+                let $messages = $('#messages');
+                $messages.html('');
+
+                $( result.msg ).each(function( ) {
+                    let e = $('<div class="alert alert-' + this.msgType + '" role="alert">' + this.msgText + '</div>');
+                    $messages.append(e);
+
+                    if (this.msgType === 'info') {
+                        // Hide message after 10 seconds when successfully processed
+                        e.fadeOut(10000);
+                    }
+                });
+
+                let scrollPos = $messages.offset().top;
+                $(window).scrollTop(scrollPos);
+            }
+        }
+
+        $(document).ready(function () {
+            $('#createOrder').click( function(e){
+                e.preventDefault();
+
+                $.post( '/createOrder',
+                    {
+                        wineQuantity: $('#quantity').val(),
+                        processDate: $('#processDate').val()
+                    }
+                )
+                .done(function( data ) {
+                    processAjaxResponse(data.result);
+
+                    if (data.result.ordersHtml) {
+                        $('#ordersInfo').html(data.result.ordersHtml.content);
+                    }
+                })
+                .fail(function( data ) {
+                    processAjaxResponse(data.result);
+                });
+            });
+
+            $(".container").delegate("#refreshOrdersList", "click", function(e){
+                e.preventDefault();
+
+                $.post( '/refreshOrdersList')
+                    .done(function( data ) {
+                        processAjaxResponse(data.result);
+
+                        if (data.result.ordersHtml) {
+                            $('#ordersInfo').html(data.result.ordersHtml.content);
+                        }
+                    })
+                    .fail(function( data ) {
+                        processAjaxResponse(data.result);
+                    });
+            });
+
+            let date = new Date();
+            let month = date.getMonth() + 1;
+            let day = date.getDate();
+            month = (month < 10) ? '0' + month : month;
+            day = (day < 10) ? '0' + day : day;
+            $('#processDate').val(date.getFullYear() + '-' + month + '-' + day);
+        });
+    </script>
+{% endblock %}
+
 
