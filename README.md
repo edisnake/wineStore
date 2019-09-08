@@ -8,7 +8,8 @@ Clone the git repository
 
 
 * For non-Docker version
-
+    
+    * Make sure your local RabbitMQ setup is ok in environment variable MESSENGER_TRANSPORT_DSN which is in the wineStore/.env file   
     * In your CLI go to wineStore folder and run following commands:
     
             composer install

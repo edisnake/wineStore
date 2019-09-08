@@ -90,6 +90,7 @@ class WineOrderService
     public function createOrder(Request $request): void
     {
         try {
+            $error = '';
             $orderHead = $this->createOrderHead();
             $availableWaiter = $this->waiterRepository->findAvailableWaiter();
 
@@ -114,13 +115,19 @@ class WineOrderService
             // Queuing the order
             $this->msgBus->dispatch(new WineOrderProcess($orderHead->getId(), $request->request->get('processDate')));
 
-            // Updating the waiter as available after placing the order
-            $availableWaiter->setAvailable(WaiterRepository::AVAILABLE);
-            $this->entityService->saveEntity($availableWaiter, true);
-
         } catch (\Throwable $e) {
             $this->entityService->rollbackTransaction();
-            throw new \InvalidArgumentException($e->getMessage());
+            $error = $e->getMessage();
+        }
+
+        // Making sure updating the waiter status to available whether the order was placed or not
+        if (isset($availableWaiter)) {
+            $availableWaiter->setAvailable(WaiterRepository::AVAILABLE);
+            $this->entityService->saveEntity($availableWaiter, true);
+        }
+
+        if ($error) {
+            throw new \InvalidArgumentException($error);
         }
     }
 
