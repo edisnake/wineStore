@@ -158,6 +158,11 @@ class WineOrderService
 
         try {
             $wineOrderHead = $this->wineOrderHeadRepository->find($wineOrderHeadId);
+
+            if ($wineOrderHead == null) {
+                throw new \InvalidArgumentException("The order $wineOrderHeadId was not found in the DB.");
+            }
+
             $availableSommelier = $this->sommelierRepository->findAvailableSommelier();
 
             if ($availableSommelier == null) {

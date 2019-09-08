@@ -186,6 +186,22 @@ class WineOrderServiceTest extends TestCase
         $customOrderService->createOrder($request);
     }
 
+    public function testProcessOrderExceptionWhenWineOrderNotFound()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        $orderHeadId = 1;
+        $processDate = date('Y-m-d');
+
+        $this->wineOrderHeadRepository
+            ->expects($this->once())
+            ->method('find')
+            ->with($this->equalTo($orderHeadId))
+            ->willReturn(null);
+
+        $this->wineOrderService->processOrder($orderHeadId, $processDate);
+    }
+
     public function testProcessOrderExceptionWhenNoAvailableSommeliers()
     {
         $this->expectException(\InvalidArgumentException::class);

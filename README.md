@@ -1,6 +1,10 @@
 ## Winery Challenge
 
-**How to install and run the application**
+### Application Preview
+
+![ShortWineDemo](https://user-images.githubusercontent.com/1470750/64490246-ade89c80-d220-11e9-94df-d5420a7fcf50.gif)
+
+### How to install and run the application
 
 Clone the git repository
 
@@ -69,3 +73,14 @@ Go to the wineStore folder and run this command
 
 * CRUD Wine Feed feature to ease wine feed handling
 
+
+## Author
+
+Edwuin Gutierrez
+edwinguti86@gmail.com
+
+
+## License
+
+Copyright(c) 2019
+MIT License
